@@ -3,8 +3,9 @@ extends layout
 block content
   div.container-fluid
     h1.page-header #{title}
-    form(method="POST", action="/process_post")
-      h6 Enter a Date
+    form(method="POST", action="/")
+      h4 Enter a Date
       input.form-control(type="text", name="date", value=" ")
-      input.btn.btn-default(type="submit" value="show conversion") 
-    h4 #{response}
+      input.btn.btn-default.margin(type="submit" value="show conversion") 
+    h4 output:
+    code #{response}
