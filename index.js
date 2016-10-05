@@ -13,7 +13,33 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false })
 app.use(urlencodedParser);
 
 app.get('/', function (req, res) {
-  res.send('Hello World!');
+  res.render('index', {title: 'FCC Timestamp Microservice'});
+});
+
+var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+app.post('/process_post', urlencodedParser, function(req, res){
+	/*response = {
+		date: req.body.date
+	};*/
+	var data = req.body.date;
+	var newDate = new Date(''+data+'');
+	if (newDate == NaN || newDate == "Invalid Date") {
+		console.log('noop');	
+	} else {
+		var year = newDate.getFullYear();
+		var month = months[newDate.getMonth()];
+		var day = newDate.getDate();
+		var natural = ""+month+" "+day+", "+year+"";
+		var unixDate = Math.floor(Date.parse(newDate)/1000);
+		response = {
+			"unix": unixDate,
+			"natural": natural
+		}
+		console.log(JSON.stringify(response));
+		res.render('index', {response: JSON.stringify(response)});
+	}
+	
+	//res.end(JSON.stringify(response));
 });
 
 app.listen(app.get('port'), function() {
