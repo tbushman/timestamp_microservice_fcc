@@ -1,10 +1,10 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  p test #{response}
-  form(method="POST", action="/process_post")
-    p Date
-    input(type="text", name="date", value=" ")
-    input(type="submit")
+  div.container-fluid
+    h1.page-header #{title}
+    form(method="POST", action="/process_post")
+      h6 Enter a Date
+      input.form-control(type="text", name="date", value=" ")
+      input.btn.btn-default(type="submit" value="show conversion") 
+    h4 #{response}

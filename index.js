@@ -18,28 +18,38 @@ app.get('/', function (req, res) {
 
 var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 app.post('/process_post', urlencodedParser, function(req, res){
-	/*response = {
-		date: req.body.date
-	};*/
 	var data = req.body.date;
 	var newDate = new Date(''+data+'');
 	if (newDate == NaN || newDate == "Invalid Date") {
-		console.log('noop');	
+		var convertDate = new Date(data*1000);
+		if (convertDate == "Invalid Date" || convertDate == NaN) {
+			response = {
+				"unix": null,
+				"natural": null
+			}	
+		} else {
+			var year = convertDate.getFullYear();
+			var month = months[convertDate.getMonth()];
+			var day = convertDate.getDate();
+			var unixDate = Math.floor(Date.parse(convertDate)/1000);
+		}
 	} else {
 		var year = newDate.getFullYear();
 		var month = months[newDate.getMonth()];
 		var day = newDate.getDate();
-		var natural = ""+month+" "+day+", "+year+"";
 		var unixDate = Math.floor(Date.parse(newDate)/1000);
-		response = {
-			"unix": unixDate,
-			"natural": natural
-		}
-		console.log(JSON.stringify(response));
-		res.render('index', {response: JSON.stringify(response)});
 	}
-	
-	//res.end(JSON.stringify(response));
+	var natural = ""+month+" "+day+", "+year+"";
+	response = {
+		"unix": unixDate,
+		"natural": natural
+	}
+	console.log(JSON.stringify(response));
+	res.render('index', {
+		title: 'FCC Timestamp Microservice', 
+		response: JSON.stringify(response)
+		}
+	);
 });
 
 app.listen(app.get('port'), function() {
