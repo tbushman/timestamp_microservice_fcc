@@ -16,16 +16,16 @@ app.use(bodyParser.json());
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 app.use(urlencodedParser);
 
-app.get(/(.+)/, function (req, res) {
+app.get(/(.+)/, function (req, res) { //regexp checks if at least one char in path
 	var dateInput = url.parse(req.url).pathname;
-	dateInput = dateInput.replace(/%20/g, " ");
+	dateInput = dateInput.replace(/%20/g, ' ').replace('/', ''); //this.. path includes slash
 	res.render('index', {
 		title: 'FCC Timestamp Microservice',
 		response: formatDate(dateInput)
 	});
 });
 
-app.post('/', urlencodedParser, function(req, res){
+app.post('/', urlencodedParser, function(req, res){ //if path empty, post from form
 	var dateInput = req.body.date;	
 	res.render('index', {
 		title: 'FCC Timestamp Microservice',
@@ -37,18 +37,22 @@ var months = ["January", "February", "March", "April", "May", "June", "July", "A
 
 function formatDate(dateInput){
 	var newDate = new Date(''+dateInput+'');
+	
 	if (newDate == NaN || newDate == "Invalid Date") {
-		var convertDate = new Date(dateInput*1000);
+		var convertDate = new Date(dateInput*1000); //try converting to milliseconds
+		console.log(convertDate)
+		console.log(dateInput)
 		if (convertDate == "Invalid Date" || convertDate == NaN) {
 			response = {
 				"unix": null,
 				"natural": null
 			}	
+			return JSON.stringify(response);
 		} else {
 			var year = convertDate.getFullYear();
 			var month = months[convertDate.getMonth()];
 			var day = convertDate.getDate();
-			var unixDate = Math.floor(Date.parse(convertDate)/1000);
+			var unixDate = Math.floor(Date.parse(convertDate)/1000); //convert back to seconds from milliseconds
 		}
 	} else {
 		var year = newDate.getFullYear();
